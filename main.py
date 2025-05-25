@@ -103,7 +103,6 @@ class GoodNewsGenerator(BasePlugin):
             output_path = os.path.join(self.temp_dir, f"{news_type}_{ctx.event.launcher_id}.jpg")
             self.generator.generate(content, news_type=news_type, output_path=output_path)
             # 构建消息链并发送图片
-            from pkg.plugin.models import Image
             message_chain = [Image(path=output_path)]
             await ctx.send_message(
                 ctx.event.launcher_type,
