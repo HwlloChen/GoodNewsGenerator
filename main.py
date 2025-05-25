@@ -65,8 +65,7 @@ class GoodNewsGenerator(BasePlugin):
         Args:
             ctx: 事件上下文
         """
-        msg = ctx.event.text_message
-        
+        msg = str(ctx.event.message_chain).strip()
         # 尝试匹配喜报格式
         good_match = self.good_news_pattern.match(msg)
         if good_match:
@@ -74,7 +73,6 @@ class GoodNewsGenerator(BasePlugin):
             print(f"匹配到喜报内容: {content}")
             await self._generate_and_send_image(ctx, content, "good")
             return
-        
         # 尝试匹配悲报格式
         bad_match = self.bad_news_pattern.match(msg)
         if bad_match:
@@ -94,36 +92,33 @@ class GoodNewsGenerator(BasePlugin):
         """
         if not self.generator:
             print("生成器未初始化")
-            await ctx.send_message(target_type="person" if isinstance(ctx.event, PersonMessageReceived) else "group", 
-                                  target_id=ctx.event.sender_id, 
-                                  message_chain="生成器初始化失败，无法生成图片")
+            await ctx.send_message(
+                ctx.event.launcher_type,
+                str(ctx.event.launcher_id),
+                "生成器初始化失败，无法生成图片"
+            )
             return
-        
         try:
             # 生成图片
-            output_path = os.path.join(self.temp_dir, f"{news_type}_{ctx.event.sender_id}.jpg")
+            output_path = os.path.join(self.temp_dir, f"{news_type}_{ctx.event.launcher_id}.jpg")
             self.generator.generate(content, news_type=news_type, output_path=output_path)
-            
             # 构建消息链并发送图片
             from pkg.plugin.models import Image
             message_chain = [Image(path=output_path)]
-            
-            # 根据事件类型确定目标类型
-            target_type = "person" if isinstance(ctx.event, PersonMessageReceived) else "group"
-            target_id = ctx.event.sender_id if target_type == "person" else ctx.event.group_id
-            
-            # 发送图片
-            await ctx.send_message(target_type=target_type, target_id=target_id, message_chain=message_chain)
-            
-            # 阻止默认行为
+            await ctx.send_message(
+                ctx.event.launcher_type,
+                str(ctx.event.launcher_id),
+                message_chain
+            )
             ctx.prevent_default()
-            
         except Exception as e:
             print(f"生成或发送图片失败: {e}")
             error_message = f"生成图片失败: {str(e)}"
-            await ctx.send_message(target_type="person" if isinstance(ctx.event, PersonMessageReceived) else "group", 
-                                  target_id=ctx.event.sender_id, 
-                                  message_chain=error_message)
+            await ctx.send_message(
+                ctx.event.launcher_type,
+                str(ctx.event.launcher_id),
+                error_message
+            )
     
     def __del__(self):
         """插件卸载时触发"""
