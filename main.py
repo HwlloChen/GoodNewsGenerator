@@ -17,7 +17,7 @@ import sys
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from generator import NewsGenerator
 
-class GoodNewsPlugin(BasePlugin):
+class GoodNewsGenerator(BasePlugin):
     """喜报/悲报生成器插件类"""
     
     def __init__(self, host: APIHost):
