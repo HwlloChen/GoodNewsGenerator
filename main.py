@@ -9,8 +9,8 @@
 import os
 import re
 import tempfile
-from pkg.plugin.context import register, handler, BasePlugin, APIHost
-from pkg.plugin.events import *
+from pkg.plugin.context import register, handler, llm_func, BasePlugin, APIHost, EventContext
+from pkg.plugin.events import *  # 导入事件类
 
 # 导入生成器模块
 import sys
