@@ -20,7 +20,7 @@ from generator import NewsGenerator
 
 @register(name="GoodNewsGenerator", 
           description="喜报/悲报生成器插件，根据关键词生成并发送喜报或悲报图片，支持Emoji和特殊字符", 
-          version="0.2.0", 
+          version="0.2.1", 
           author="HwlloChen")
 
 class GoodNewsGenerator(BasePlugin):
