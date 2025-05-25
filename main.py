@@ -39,7 +39,7 @@ class GoodNewsGenerator(BasePlugin):
         
         # 临时目录，用于存储生成的图片
         self.temp_dir = tempfile.mkdtemp()
-        self.ap.logger.debug(f"临时目录创建: {self.temp_dir}")
+        print(f"临时目录创建: {self.temp_dir}")
         
         # 正则表达式，用于匹配"喜报 xxx"或"悲报 xxx"格式的消息
         self.good_news_pattern = re.compile(r'^喜报\s+(.+)$')
@@ -52,9 +52,9 @@ class GoodNewsGenerator(BasePlugin):
             current_dir = os.path.dirname(os.path.abspath(__file__))
             assets_dir = os.path.join(current_dir, 'assets')
             self.generator = NewsGenerator(assets_dir=assets_dir)
-            self.ap.logger.debug("生成器初始化成功")
+            print("生成器初始化成功")
         except Exception as e:
-            self.ap.logger.error(f"生成器初始化失败: {e}")
+            print(f"生成器初始化失败: {e}")
     
     @handler(PersonMessageReceived)
     @handler(GroupMessageReceived)
@@ -71,7 +71,7 @@ class GoodNewsGenerator(BasePlugin):
         good_match = self.good_news_pattern.match(msg)
         if good_match:
             content = good_match.group(1)
-            self.ap.logger.debug(f"匹配到喜报内容: {content}")
+            print(f"匹配到喜报内容: {content}")
             await self._generate_and_send_image(ctx, content, "good")
             return
         
@@ -79,7 +79,7 @@ class GoodNewsGenerator(BasePlugin):
         bad_match = self.bad_news_pattern.match(msg)
         if bad_match:
             content = bad_match.group(1)
-            self.ap.logger.debug(f"匹配到悲报内容: {content}")
+            print(f"匹配到悲报内容: {content}")
             await self._generate_and_send_image(ctx, content, "bad")
             return
     
@@ -93,7 +93,7 @@ class GoodNewsGenerator(BasePlugin):
             news_type: 图片类型，'good'表示喜报，'bad'表示悲报
         """
         if not self.generator:
-            self.ap.logger.error("生成器未初始化")
+            print("生成器未初始化")
             await ctx.send_message(target_type="person" if isinstance(ctx.event, PersonMessageReceived) else "group", 
                                   target_id=ctx.event.sender_id, 
                                   message_chain="生成器初始化失败，无法生成图片")
@@ -119,7 +119,7 @@ class GoodNewsGenerator(BasePlugin):
             ctx.prevent_default()
             
         except Exception as e:
-            self.ap.logger.error(f"生成或发送图片失败: {e}")
+            print(f"生成或发送图片失败: {e}")
             error_message = f"生成图片失败: {str(e)}"
             await ctx.send_message(target_type="person" if isinstance(ctx.event, PersonMessageReceived) else "group", 
                                   target_id=ctx.event.sender_id, 
@@ -132,6 +132,6 @@ class GoodNewsGenerator(BasePlugin):
             import shutil
             if os.path.exists(self.temp_dir):
                 shutil.rmtree(self.temp_dir)
-                self.ap.logger.debug(f"临时目录已清理: {self.temp_dir}")
+                print(f"临时目录已清理: {self.temp_dir}")
         except Exception as e:
-            self.ap.logger.error(f"清理临时目录失败: {e}")
+            print(f"清理临时目录失败: {e}")
