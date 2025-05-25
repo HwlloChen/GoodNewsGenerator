@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Plugin
+metadata:
+  author: hwllochen
+  name: GoodNewsGenerator
+  repository: 'https://github.com/hwllochen/GoodNewsGenerator'
+  version: 0.1.0
+  description: 
+    en_US: Plugin for generating good news and bad news images
+    zh_Hans: 喜报/悲报生成器插件，根据关键词生成并发送喜报或悲报图片
+  label:
+    en_US: Good News Generator
+    zh_Hans: 喜报/悲报生成器
+spec:
+  config:
+    - name: font_path
+      label:
+        en_US: Custom Font Path
+        zh_Hans: 自定义字体路径
+      description:
+        en_US: Optional custom font path for text rendering
+        zh_Hans: 可选的自定义字体路径，用于文字渲染
+      type: string
+      required: false
