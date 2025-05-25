@@ -2,7 +2,7 @@
 
 ## 简介
 
-喜报/悲报生成器是一个Langbot插件，可以根据关键词生成并发送喜报或悲报风格的图片。当用户在私聊或群聊中发送以"喜报"或"悲报"开头的消息时，插件会自动生成对应风格的图片并发送。
+喜报/悲报生成器是一个Langbot插件，可以根据关键词生成并发送喜报或悲报风格的图片。当用户在私聊或群聊中发送以"喜报"或"悲报"开头的消息时，插件会自动生成对应的图片并发送。
 
 ## 功能特点
 
@@ -14,29 +14,15 @@
 
 ## 安装方法
 
-### 方法一：从GitHub仓库安装
+### 方法一：从WebUI安装
 
 1. 在Langbot WebUI的插件管理页面，点击"安装"按钮
-2. 输入插件的GitHub仓库地址
+2. 输入插件的GitHub仓库地址 `https://github.com/HwlloChen/GoodNewsGenerator`
 3. 点击"安装"按钮完成安装
 
-### 方法二：手动安装
+### 方法二：
 
-1. 下载本插件的完整代码包
-2. 将代码包解压到Langbot的`plugins`目录下
-3. 确保目录结构如下：
-   ```
-   plugins/
-   └── GoodNewsGenerator/
-       ├── main.py
-       ├── manifest.yaml
-       ├── generator.py
-       └── assets/
-           ├── good_news.jpg
-           ├── bad_news.jpg
-           └── simhei.ttf
-   ```
-4. 重启Langbot或使用`!plugin on GoodNewsGenerator`命令启用插件
+1. 发送 `!plugin get https://github.com/HwlloChen/GoodNewsGenerator` 以安装
 
 ## 使用方法
 
@@ -70,9 +56,11 @@
 
 插件支持以下配置选项：
 
-- `font_path`：自定义字体路径，用于文字渲染（可选）
+- `font_path`：自定义字体路径，用于文字渲染（可选），默认使用Noto Sans字体
 
 可以在Langbot WebUI的插件管理页面中修改这些配置。
+
+> 由于作者在Langbot 3上进行的测试，该功能暂未实现，请自行更改插件目录下的`assets/font.ttf`
 
 ## 常见问题
 

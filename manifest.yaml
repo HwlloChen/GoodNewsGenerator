@@ -18,8 +18,8 @@ spec:
         en_US: Custom Font Path
         zh_Hans: 自定义字体路径
       description:
-        en_US: Optional custom font path for text rendering
-        zh_Hans: 可选的自定义字体路径，用于文字渲染
+        en_US: Optional custom font path for text rendering (not implemented yet, please change the font.ttf in the plugin directory)
+        zh_Hans: 可选的自定义字体路径，用于文字渲染(暂未实现，请自行更改插件目录下的assets/font.ttf)
       type: string
       required: false
 execution:
