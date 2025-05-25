@@ -11,11 +11,17 @@ import re
 import tempfile
 from pkg.plugin.context import register, handler, llm_func, BasePlugin, APIHost, EventContext
 from pkg.plugin.events import *  # 导入事件类
+from pkg.platform.types import *
 
 # 导入生成器模块
 import sys
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from generator import NewsGenerator
+
+@register(name="GoodNewsGenerator", 
+          description="喜报/悲报生成器插件，根据关键词生成并发送喜报或悲报图片", 
+          version="0.1.0", 
+          author="HwlloChen")
 
 class GoodNewsGenerator(BasePlugin):
     """喜报/悲报生成器插件类"""
@@ -50,8 +56,9 @@ class GoodNewsGenerator(BasePlugin):
         except Exception as e:
             self.ap.logger.error(f"生成器初始化失败: {e}")
     
-    @handler(PersonNormalMessageReceived)
-    async def person_normal_message_received(self, ctx: EventContext):
+    @handler(PersonMessageReceived)
+    @handler(GroupMessageReceived)
+    async def message_received(self, ctx: EventContext):
         """
         处理私聊消息
         
@@ -59,34 +66,6 @@ class GoodNewsGenerator(BasePlugin):
             ctx: 事件上下文
         """
         msg = ctx.event.text_message
-        self.ap.logger.debug(f"收到私聊消息: {msg}")
-        
-        # 尝试匹配喜报格式
-        good_match = self.good_news_pattern.match(msg)
-        if good_match:
-            content = good_match.group(1)
-            self.ap.logger.debug(f"匹配到喜报内容: {content}")
-            await self._generate_and_send_image(ctx, content, "good")
-            return
-        
-        # 尝试匹配悲报格式
-        bad_match = self.bad_news_pattern.match(msg)
-        if bad_match:
-            content = bad_match.group(1)
-            self.ap.logger.debug(f"匹配到悲报内容: {content}")
-            await self._generate_and_send_image(ctx, content, "bad")
-            return
-    
-    @handler(GroupNormalMessageReceived)
-    async def group_normal_message_received(self, ctx: EventContext):
-        """
-        处理群聊消息
-        
-        Args:
-            ctx: 事件上下文
-        """
-        msg = ctx.event.text_message
-        self.ap.logger.debug(f"收到群聊消息: {msg}")
         
         # 尝试匹配喜报格式
         good_match = self.good_news_pattern.match(msg)
@@ -115,7 +94,7 @@ class GoodNewsGenerator(BasePlugin):
         """
         if not self.generator:
             self.ap.logger.error("生成器未初始化")
-            await ctx.send_message(target_type="person" if isinstance(ctx.event, PersonNormalMessageReceived) else "group", 
+            await ctx.send_message(target_type="person" if isinstance(ctx.event, PersonMessageReceived) else "group", 
                                   target_id=ctx.event.sender_id, 
                                   message_chain="生成器初始化失败，无法生成图片")
             return
@@ -130,7 +109,7 @@ class GoodNewsGenerator(BasePlugin):
             message_chain = [Image(path=output_path)]
             
             # 根据事件类型确定目标类型
-            target_type = "person" if isinstance(ctx.event, PersonNormalMessageReceived) else "group"
+            target_type = "person" if isinstance(ctx.event, PersonMessageReceived) else "group"
             target_id = ctx.event.sender_id if target_type == "person" else ctx.event.group_id
             
             # 发送图片
@@ -142,7 +121,7 @@ class GoodNewsGenerator(BasePlugin):
         except Exception as e:
             self.ap.logger.error(f"生成或发送图片失败: {e}")
             error_message = f"生成图片失败: {str(e)}"
-            await ctx.send_message(target_type="person" if isinstance(ctx.event, PersonNormalMessageReceived) else "group", 
+            await ctx.send_message(target_type="person" if isinstance(ctx.event, PersonMessageReceived) else "group", 
                                   target_id=ctx.event.sender_id, 
                                   message_chain=error_message)
     
