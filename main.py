@@ -20,7 +20,7 @@ from generator import NewsGenerator
 
 @register(name="GoodNewsGenerator", 
           description="喜报/悲报生成器插件，根据关键词生成并发送喜报或悲报图片，支持Emoji和特殊字符", 
-          version="0.2.1", 
+          version="0.2.2", 
           author="HwlloChen")
 
 class GoodNewsGenerator(BasePlugin):
@@ -38,7 +38,9 @@ class GoodNewsGenerator(BasePlugin):
         self.generator = None
         
         # 临时目录，用于存储生成的图片
-        self.temp_dir = tempfile.mkdtemp()
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        self.temp_dir = os.path.join(current_dir, "temp")
+        os.makedirs(self.temp_dir, exist_ok=True)
         print(f"临时目录创建: {self.temp_dir}")
         
         # 正则表达式，用于匹配"喜报 xxx"或"悲报 xxx"格式的消息

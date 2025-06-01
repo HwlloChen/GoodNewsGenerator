@@ -4,7 +4,7 @@ metadata:
   author: HwlloChen
   name: GoodNewsGenerator
   repository: 'https://github.com/HwlloChen/GoodNewsGenerator'
-  version: 0.2.1
+  version: 0.2.2
   description: 
     en_US: Plugin for generating good news and bad news images
     zh_Hans: 喜报/悲报生成器插件，根据关键词生成并发送喜报或悲报图片
